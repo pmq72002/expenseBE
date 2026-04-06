@@ -1,0 +1,8 @@
+package com.expenseBE.expenseBE.repository;
+
+
+import com.expenseBE.expenseBE.Enitty.Category;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CategoryRepository extends JpaRepository<Category, Long> {
+}
