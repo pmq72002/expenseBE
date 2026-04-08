@@ -13,9 +13,13 @@ public class Activity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long category_id;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     private Double amount;
 
     private LocalDateTime created_at;
+
+    private String description;
 }
