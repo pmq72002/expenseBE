@@ -5,11 +5,14 @@ import com.expenseBE.expenseBE.Enitty.Category;
 import com.expenseBE.expenseBE.dto.ActivityDTO;
 import com.expenseBE.expenseBE.repository.ActivityRepository;
 import com.expenseBE.expenseBE.repository.CategoryRepository;
+import com.expenseBE.expenseBE.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -21,9 +24,19 @@ public class ActivityResource {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    private final ActivityService activityService;
+
+    public ActivityResource(ActivityService activityService) {
+        this.activityService = activityService;
+    }
     @GetMapping("/activities")
     public List<Activity> getAll() {
         return activityRepository.findAll();
+    }
+
+    @GetMapping("/group-by-date")
+    public Map<LocalDate, List<Activity>> getActivities() {
+        return activityService.getActivitiesGroupByDate();
     }
 
     @PostMapping("/activity")
@@ -46,7 +59,7 @@ public class ActivityResource {
             a.setCategory(category);
             a.setAmount(r.getAmount());
             a.setDescription(r.getDescription());
-            a.setCreated_at(LocalDateTime.parse(r.getDate() + "T00:00:00"));
+            a.setCreatedAt(LocalDateTime.parse(r.getDate() + "T00:00:00"));
 
             return a;
 

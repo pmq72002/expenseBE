@@ -19,7 +19,8 @@ public class Activity {
 
     private Double amount;
 
-    private LocalDateTime created_at;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
     private String description;
 }
