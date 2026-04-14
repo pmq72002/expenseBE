@@ -67,4 +67,9 @@ public class ActivityResource {
 
         return activityRepository.saveAll(activities);
     }
+
+    @DeleteMapping("/activity/{id}")
+    public void delete(@PathVariable Long id) {
+        activityRepository.deleteById(id);
+    }
 }
