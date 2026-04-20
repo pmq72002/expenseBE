@@ -3,6 +3,8 @@ package com.expenseBE.expenseBE.resource;
 import com.expenseBE.expenseBE.Enitty.Activity;
 import com.expenseBE.expenseBE.Enitty.Category;
 import com.expenseBE.expenseBE.dto.ActivityDTO;
+import com.expenseBE.expenseBE.dto.TopCategoryDTO;
+import com.expenseBE.expenseBE.dto.TopDayDTO;
 import com.expenseBE.expenseBE.repository.ActivityRepository;
 import com.expenseBE.expenseBE.repository.CategoryRepository;
 import com.expenseBE.expenseBE.service.ActivityService;
@@ -71,5 +73,34 @@ public class ActivityResource {
     @DeleteMapping("/activity/{id}")
     public void delete(@PathVariable Long id) {
         activityRepository.deleteById(id);
+    }
+
+    @GetMapping("/top-day")
+        public TopDayDTO getTopSpendingDay() {
+            Object[] row = activityRepository.getTopSpendingDay().get(0);
+            java.sql.Date day = (java.sql.Date) row[0];
+            Double total = ((Number) row[1]).doubleValue();
+            return new TopDayDTO(day.toLocalDate(), total);
+    }
+
+    @GetMapping("/top-day-list")
+    public List<TopDayDTO> getTopDayList() {
+        return activityRepository.getTopSpendingDay()
+                .stream()
+                .map(row -> new TopDayDTO(
+                        ((java.sql.Date) row[0]).toLocalDate(),
+                        ((Number) row[1]).doubleValue()
+                ))
+                .toList();
+    }
+
+    @GetMapping("/top-category")
+        public TopCategoryDTO getTopCategory() {
+        return categoryRepository.getTopCategory().get(0);
+    }
+
+    @GetMapping("/top-category-list")
+    public List<TopCategoryDTO> getTopCategoryList() {
+        return categoryRepository.getTopCategory();
     }
 }
