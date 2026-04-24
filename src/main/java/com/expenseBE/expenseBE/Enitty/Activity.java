@@ -2,6 +2,8 @@ package com.expenseBE.expenseBE.Enitty;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import com.expenseBE.expenseBE.enums.ActivityType;
+
 
 import java.time.LocalDateTime;
 
@@ -18,6 +20,9 @@ public class Activity {
     private Category category;
 
     private Double amount;
+
+    @Enumerated(EnumType.STRING)
+    private ActivityType type;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

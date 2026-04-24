@@ -62,6 +62,7 @@ public class ActivityResource {
             a.setAmount(r.getAmount());
             a.setDescription(r.getDescription());
             a.setCreatedAt(LocalDateTime.parse(r.getDate() + "T00:00:00"));
+            a.setType(r.getType());
 
             return a;
 

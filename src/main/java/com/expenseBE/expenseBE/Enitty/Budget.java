@@ -1,5 +1,6 @@
 package com.expenseBE.expenseBE.Enitty;
 
+import com.expenseBE.expenseBE.enums.ActivityType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,4 +18,6 @@ public class Budget {
     private LocalDate month;
     private Double max_amount;
 
+    @Enumerated(EnumType.STRING)
+    private ActivityType type;
 }
