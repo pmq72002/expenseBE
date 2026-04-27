@@ -11,10 +11,21 @@ public interface ActivityRepository extends JpaRepository<Activity, Long> {
 
     //ngày chi nhiều nhất
     @Query("""
-    SELECT FUNCTION('DATE', a.createdAt), SUM(a.amount)
-    FROM Activity a
-    GROUP BY FUNCTION('DATE', a.createdAt)
-    ORDER BY SUM(a.amount) DESC
+SELECT FUNCTION('DATE', a.createdAt),
+       SUM(
+         CASE 
+           WHEN a.type = 'EXPENSE' THEN a.amount
+           ELSE (-1 * a.amount)
+         END
+       )
+FROM Activity a
+GROUP BY FUNCTION('DATE', a.createdAt)
+ORDER BY SUM(
+         CASE 
+           WHEN a.type = 'EXPENSE' THEN a.amount
+           ELSE (-1 * a.amount)
+         END
+       ) DESC
 """)
     List<Object[]> getTopSpendingDay();
 }

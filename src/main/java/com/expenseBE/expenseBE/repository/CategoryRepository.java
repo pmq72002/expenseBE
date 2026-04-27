@@ -13,13 +13,18 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     //Category chi nhiều nhất
     @Query("""
-    SELECT new com.expenseBE.expenseBE.dto.TopCategoryDTO(
-        a.category.name,
-        SUM(a.amount)
-    )
-    FROM Activity a
-    GROUP BY a.category.name
-    ORDER BY SUM(a.amount) DESC
+SELECT new com.expenseBE.expenseBE.dto.TopCategoryDTO(
+    a.category.name,
+    CAST(SUM(
+        CASE 
+            WHEN a.type = 'EXPENSE' THEN a.amount
+            ELSE -a.amount
+        END
+    ) as double)
+)
+FROM Activity a
+GROUP BY a.category.name
+ORDER BY 2 DESC
 """)
     List<TopCategoryDTO> getTopCategory();
 }
