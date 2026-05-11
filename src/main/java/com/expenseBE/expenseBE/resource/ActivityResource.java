@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Map;
 
@@ -77,16 +78,29 @@ public class ActivityResource {
     }
 
     @GetMapping("/top-day")
-        public TopDayDTO getTopSpendingDay() {
-            Object[] row = activityRepository.getTopSpendingDay().get(0);
-            java.sql.Date day = (java.sql.Date) row[0];
-            Double total = ((Number) row[1]).doubleValue();
-            return new TopDayDTO(day.toLocalDate(), total);
+    public TopDayDTO getTopSpendingDay(@RequestParam String month) {
+
+        LocalDateTime start = getStartDate(month);
+        LocalDateTime end = getEndDate(month);
+
+        Object[] row = activityRepository
+                .getTopSpendingDay(start, end)
+                .get(0);
+
+        java.sql.Date day = (java.sql.Date) row[0];
+        Double total = ((Number) row[1]).doubleValue();
+
+        return new TopDayDTO(day.toLocalDate(), total);
     }
 
     @GetMapping("/top-day-list")
-    public List<TopDayDTO> getTopDayList() {
-        return activityRepository.getTopSpendingDay()
+    public List<TopDayDTO> getTopDayList(@RequestParam String month) {
+
+        LocalDateTime start = getStartDate(month);
+        LocalDateTime end = getEndDate(month);
+
+        return activityRepository
+                .getTopSpendingDay(start, end)
                 .stream()
                 .map(row -> new TopDayDTO(
                         ((java.sql.Date) row[0]).toLocalDate(),
@@ -96,12 +110,40 @@ public class ActivityResource {
     }
 
     @GetMapping("/top-category")
-        public TopCategoryDTO getTopCategory() {
-        return categoryRepository.getTopCategory().get(0);
+    public TopCategoryDTO getTopCategory(@RequestParam String month) {
+
+        LocalDateTime start = getStartDate(month);
+        LocalDateTime end = getEndDate(month);
+
+        return categoryRepository
+                .getTopCategory(start, end)
+                .get(0);
     }
 
     @GetMapping("/top-category-list")
-    public List<TopCategoryDTO> getTopCategoryList() {
-        return categoryRepository.getTopCategory();
+    public List<TopCategoryDTO> getTopCategoryList(
+            @RequestParam String month
+    ) {
+
+        LocalDateTime start = getStartDate(month);
+        LocalDateTime end = getEndDate(month);
+
+        return categoryRepository.getTopCategory(start, end);
+    }
+
+    private LocalDateTime getStartDate(String month) {
+
+        YearMonth ym = YearMonth.parse(month);
+
+        return ym.atDay(10).atStartOfDay();
+    }
+
+    private LocalDateTime getEndDate(String month) {
+
+        YearMonth ym = YearMonth.parse(month);
+
+        return ym.plusMonths(1)
+                .atDay(10)
+                .atStartOfDay();
     }
 }
